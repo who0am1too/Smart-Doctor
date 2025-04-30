@@ -17,3 +17,10 @@ Smart Doctor aims to enhance medical practice efficiency and support ongoing pro
 1. Clone the repository:
    ```bash
    git clone https://github.com/your-username/Smart-Doctor.git
+
+## Created by
+Md. Mehedi Hassan
+Roll: 2004034
+3rd Year, 2nd Semester
+Department of Electronics and Telecommunication Engineering (ETE),
+Rajshahi University of Engineering & Technology (RUET)
