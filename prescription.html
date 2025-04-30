@@ -1,0 +1,924 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prescription - Dr. Zakir Hossain</title>
+    <link rel="stylesheet" href="prescription.css">
+</head>
+<body>
+    <div class="prescription-container">
+        <!-- Header Section -->
+        <header>
+            <h1>Dr. Zakir Hossain</h1>
+            <p>MBBS, MD (Dermatology)</p>
+            <p>CODE: $1234-45$</p>
+            <p>Website: <a href="http://www.drzakirhossain.com">www.drzakirhossain.com</a></p>
+            <p>Contact: 0088 07749491276 | Email: <a href="mailto:drzakir@example.com">drzakir@example.com</a></p>
+            <p>Address: 5530, Shinomani, Hathandha, Laimonrhat</p>
+        </header>
+
+        <!-- Patient Information Section -->
+        <section class="patient-info">
+            <h2>Patient Information</h2>
+            <div class="form-group">
+                <label for="patientName">Name:</label>
+                <input type="text" id="patientName" name="patientName">
+                <span class="print-value" data-for="patientName"></span>
+            </div>
+            <div class="form-group">
+                <label for="patientAge">Age:</label>
+                <input type="number" id="patientAge" name="patientAge" min="0">
+                <span class="print-value" data-for="patientAge"></span>
+            </div>
+            <div class="form-group">
+                <label>Gender:</label>
+                <label><input type="radio" name="gender" value="Male"> Male</label>
+                <label><input type="radio" name="gender" value="Female"> Female</label>
+                <span class="print-value" data-for="gender"></span>
+            </div>
+            <div class="form-group">
+                <label for="phoneNumber">Phone Number:</label>
+                <input type="tel" id="phoneNumber" name="phoneNumber">
+                <span class="print-value" data-for="phoneNumber"></span>
+            </div>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="text" id="email" name="email">
+                <span class="print-value" data-for="email"></span>
+            </div>
+        </section>
+
+        <!-- Indications Section -->
+        <section class="indications">
+            <h2>Indications</h2>
+            <div class="form-group">
+                <label for="chiefComplaints">Chief Complaints:</label>
+                <div class="autocomplete">
+                    <textarea id="chiefComplaints" name="chiefComplaints" rows="3" placeholder="Enter Chief Complaints"></textarea>
+                    <div class="suggestions chief-complaints-suggestions"></div>
+                </div>
+                <span class="print-value" data-for="chiefComplaints"></span>
+            </div>
+            <div class="form-group">
+                <label for="drugHistory">Drug History:</label>
+                <div class="autocomplete">
+                    <textarea id="drugHistory" name="drugHistory" rows="3" placeholder="Enter Drug History"></textarea>
+                    <div class="suggestions drug-history-suggestions"></div>
+                </div>
+                <span class="print-value" data-for="drugHistory"></span>
+            </div>
+            <div class="form-group">
+                <label for="tests">Tests:</label>
+                <div class="autocomplete">
+                    <textarea id="tests" name="tests" rows="3" placeholder="Enter Tests"></textarea>
+                    <div class="suggestions tests-suggestions"></div>
+                </div>
+                <span class="print-value" data-for="tests"></span>
+            </div>
+        </section>
+
+        <!-- Medicine Table Section -->
+        <section class="medicine-section">
+            <h2>Prescription</h2>
+            <table id="medicineTable">
+                <thead>
+                    <tr>
+                        <th>Medicine Name</th>
+                        <th>Dose (mg)</th>
+                        <th>Route</th>
+                        <th colspan="3">Frequency</th>
+                        <th>Recommendation</th>
+                    </tr>
+                    <tr class="sub-header">
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th>Morning</th>
+                        <th>Afternoon</th>
+                        <th>Night</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="medicine-row">
+                        <td>
+                            <div class="autocomplete">
+                                <input type="text" class="medicine-name" placeholder="Search Medicine">
+                                <div class="suggestions medicine-suggestions"></div>
+                            </div>
+                            <span class="print-value" data-for="medicine-name"></span>
+                        </td>
+                        <td>
+                            <input type="number" class="dose" min="0">
+                            <span class="print-value" data-for="dose"></span>
+                        </td>
+                        <td>
+                            <select class="route">
+                                <option value="" disabled selected>Select Route</option>
+                                <option value="Oral">Oral</option>
+                                <option value="IV">IV</option>
+                                <option value="Topical">Topical</option>
+                            </select>
+                            <span class="print-value" data-for="route"></span>
+                        </td>
+                        <td>
+                            <input type="number" class="morning" min="0">
+                            <span class="print-value" data-for="morning"></span>
+                        </td>
+                        <td>
+                            <input type="number" class="afternoon" min="0">
+                            <span class="print-value" data-for="afternoon"></span>
+                        </td>
+                        <td>
+                            <input type="number" class="night" min="0">
+                            <span class="print-value" data-for="night"></span>
+                        </td>
+                        <td>
+                            <div class="autocomplete">
+                                <input type="text" class="recommendation" placeholder="Add Recommendation">
+                                <div class="suggestions recommendation-suggestions"></div>
+                            </div>
+                            <span class="print-value" data-for="recommendation"></span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="button-group">
+                <button id="addMedicine">Add Medicine</button>
+                <button id="removeMedicine">Remove Medicine</button>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <p>Date: <span id="currentDate"></span></p>
+        </footer>
+
+        <!-- Generate Prescription Button -->
+        <div class="button-container">
+            <button id="generatePrescription">Generate Prescription</button>
+        </div>
+    </div>
+
+    <script>
+        // Medicine data with common doses (mg or other units where applicable) - Alphabetically organized
+        const medicineData = {
+            "Abacavir": 300,              // Antiretroviral
+            "Abiraterone": 250,           // Anticancer
+            "Acarbose": 50,               // Antidiabetic
+            "Aceclofenac": 100,           // NSAID
+            "Acetaminophen (Paracetamol)": 500, // Analgesic, antipyretic
+            "Acetazolamide": 250,         // Diuretic, glaucoma
+            "Acyclovir": 400,             // Antiviral
+            "Adalimumab": 40,             // Biologic, anti-inflammatory (mg/injection)
+            "Adapalene": 1,               // Topical retinoid (mg/g)
+            "Adenosine": 6,               // Antiarrhythmic (mg/dose IV)
+            "Albendazole": 400,           // Anthelmintic, single dose
+            "Albuterol (Salbutamol)": 4,  // Bronchodilator
+            "Alendronate": 70,            // Bisphosphonate, weekly dose
+            "Alfuzosin": 10,              // Alpha-blocker
+            "Allopurinol": 100,           // Antigout
+            "Alprazolam": 0.5,            // Anxiolytic
+            "Alteplase": 100,             // Thrombolytic (mg/infusion)
+            "Aluminium Hydroxide": 500,   // Antacid
+            "Amantadine": 100,            // Antiviral, antiparkinsonian
+            "Amikacin": 500,              // Antibiotic (mg/dose IV)
+            "Amiloride": 5,               // Diuretic
+            "Aminophylline": 250,         // Bronchodilator (mg/dose IV)
+            "Amiodarone": 200,            // Antiarrhythmic
+            "Amitriptyline": 25,          // Antidepressant
+            "Amlodipine": 5,              // Antihypertensive
+            "Amoxicillin": 500,           // Antibiotic
+            "Amphotericin B": 50,         // Antifungal (mg/dose IV)
+            "Ampicillin": 500,            // Antibiotic
+            "Anastrozole": 1,             // Anticancer
+            "Apixaban": 5,                // Anticoagulant
+            "Aripiprazole": 10,           // Antipsychotic
+            "Artemether + Lumefantrine": 80, // Antimalarial (Artemether dose per tablet)
+            "Ascorbic Acid (Vitamin C)": 500, // Vitamin
+            "Aspirin": 300,               // Analgesic, antiplatelet
+            "Atazanavir": 300,            // Antiretroviral
+            "Atenolol": 50,               // Beta-blocker
+            "Atomoxetine": 40,            // ADHD treatment
+            "Atorvastatin": 10,           // Statin
+            "Atropine": 0.5,              // Anticholinergic (mg/dose IV)
+            "Azathioprine": 50,           // Immunosuppressant
+            "Azithromycin": 500,          // Antibiotic, single dose
+            "Aztreonam": 1000,            // Antibiotic (mg/dose IV)
+            "Baclofen": 10,               // Muscle relaxant
+            "Bedaquiline": 400,           // Antitubercular (initial dose)
+            "Beclomethasone": 0.2,        // Corticosteroid (mg/inhalation)
+            "Benazepril": 10,             // ACE inhibitor
+            "Benzathine Penicillin": 1200, // Antibiotic (mg/dose IM)
+            "Benzocaine": 10,             // Local anesthetic (mg/g topical)
+            "Benzyl Benzoate": 250,       // Scabicide (mg/mL)
+            "Betahistine": 16,            // Vertigo treatment
+            "Betamethasone": 0.5,         // Corticosteroid (mg/dose topical/oral)
+            "Bevacizumab": 400,           // Anticancer (mg/dose IV)
+            "Bicalutamide": 50,           // Anticancer
+            "Bimatoprost": 0.3,           // Glaucoma (mg/mL eye drops)
+            "Bisacodyl": 10,              // Laxative
+            "Bisoprolol": 5,              // Beta-blocker
+            "Bleomycin": 15,              // Anticancer (mg/dose IV)
+            "Brimonidine": 2,             // Glaucoma (mg/mL eye drops)
+            "Bromazepam": 3,              // Anxiolytic
+            "Budesonide": 0.5,            // Corticosteroid (mg/inhalation)
+            "Bupivacaine": 5,             // Local anesthetic (mg/mL)
+            "Bupropion": 150,             // Antidepressant
+            "Buspirone": 10,              // Anxiolytic
+            "Butamirate": 50,             // Antitussive
+            "Cabergoline": 0.5,           // Dopamine agonist
+            "Caffeine": 100,              // Stimulant
+            "Captopril": 25,              // ACE inhibitor
+            "Carbamazepine": 200,         // Anticonvulsant
+            "Carbimazole": 5,             // Antithyroid
+            "Carboplatin": 150,           // Anticancer (mg/dose IV)
+            "Carvedilol": 6.25,           // Beta-blocker
+            "Cefadroxil": 500,            // Antibiotic
+            "Cefepime": 1000,             // Antibiotic (mg/dose IV)
+            "Cefixime": 200,              // Antibiotic
+            "Cefotaxime": 1000,           // Antibiotic (mg/dose IV)
+            "Cefpodoxime": 200,           // Antibiotic
+            "Ceftazidime": 1000,          // Antibiotic (mg/dose IV)
+            "Ceftriaxone": 1000,          // Antibiotic (mg/dose IV)
+            "Cefuroxime": 250,            // Antibiotic
+            "Celecoxib": 200,             // NSAID
+            "Cephalexin": 500,            // Antibiotic
+            "Cetirizine": 10,             // Antihistamine
+            "Chloramphenicol": 500,       // Antibiotic
+            "Chlorhexidine": 2,           // Antiseptic (mg/mL)
+            "Chlorpheniramine": 4,        // Antihistamine
+            "Chlorpromazine": 25,         // Antipsychotic
+            "Chloroquine": 250,           // Antimalarial
+            "Ciprofloxacin": 500,         // Antibiotic
+            "Cisplatin": 50,              // Anticancer (mg/dose IV)
+            "Clarithromycin": 250,        // Antibiotic
+            "Clindamycin": 300,           // Antibiotic
+            "Clobetasol": 0.5,            // Corticosteroid (mg/g topical)
+            "Clonazepam": 0.5,            // Anticonvulsant, anxiolytic
+            "Clonidine": 0.1,             // Antihypertensive
+            "Clopidogrel": 75,            // Antiplatelet
+            "Clotrimazole": 10,           // Antifungal (mg/g topical)
+            "Clozapine": 100,             // Antipsychotic
+            "Colchicine": 0.5,            // Antigout
+            "Cyanocobalamin (Vitamin B12)": 1000, // Vitamin (mcg/dose)
+            "Cyclophosphamide": 50,       // Anticancer
+            "Cycloserine": 250,           // Antitubercular
+            "Cyproheptadine": 4,          // Antihistamine
+            "Cyproterone": 50,            // Antiandrogen
+            "Dabigatran": 150,            // Anticoagulant
+            "Dapsone": 100,               // Antibacterial
+            "Darunavir": 600,             // Antiretroviral
+            "Deflazacort": 6,             // Corticosteroid
+            "Desloratadine": 5,           // Antihistamine
+            "Desmopressin": 0.1,          // Antidiuretic (mg/dose)
+            "Dexamethasone": 0.5,         // Corticosteroid
+            "Dexchlorpheniramine": 2,     // Antihistamine
+            "Dexlansoprazole": 30,        // Proton pump inhibitor
+            "Dexmedetomidine": 0.2,       // Sedative (mg/dose IV)
+            "Dextromethorphan": 15,       // Antitussive
+            "Dextrose": 5000,             // Glucose (mg/100mL IV)
+            "Diazepam": 5,                // Anxiolytic, anticonvulsant
+            "Diclofenac": 50,             // NSAID
+            "Dicyclomine": 10,            // Antispasmodic
+            "Didanosine": 200,            // Antiretroviral
+            "Digoxin": 0.25,              // Cardiac glycoside
+            "Diltiazem": 60,              // Calcium channel blocker
+            "Dimenhydrinate": 50,         // Antiemetic
+            "Dimethicone": 40,            // Antiflatulent
+            "Diphenhydramine": 25,        // Antihistamine
+            "Dipyridamole": 75,           // Antiplatelet
+            "Disulfiram": 250,            // Alcohol deterrent
+            "Dobutamine": 250,            // Inotrope (mg/dose IV)
+            "Docusate Sodium": 100,       // Laxative
+            "Domperidone": 10,            // Antiemetic
+            "Donepezil": 5,               // Alzheimer’s treatment
+            "Doxazosin": 4,               // Alpha-blocker
+            "Doxorubicin": 50,            // Anticancer (mg/dose IV)
+            "Doxycycline": 100,           // Antibiotic
+            "Efavirenz": 600,             // Antiretroviral
+            "Eltrombopag": 50,            // Thrombopoietin agonist
+            "Enalapril": 10,              // ACE inhibitor
+            "Enoxaparin": 40,             // Anticoagulant (mg/dose SC)
+            "Entecavir": 0.5,             // Antiviral
+            "Entyvio": 300,               // Biologic (mg/dose IV, Vedolizumab)
+            "Ephedrine": 30,              // Sympathomimetic
+            "Eplerenone": 25,             // Diuretic
+            "Epinephrine": 1,             // Adrenergic (mg/dose IV)
+            "Epoetin Alfa": 4000,         // Erythropoietin (IU/dose)
+            "Erythromycin": 250,          // Antibiotic
+            "Escitalopram": 10,           // Antidepressant
+            "Esmolol": 100,               // Beta-blocker (mg/dose IV)
+            "Esomeprazole": 20,           // Proton pump inhibitor
+            "Estradiol": 2,               // Hormone
+            "Estrogen": 0.625,            // Hormone (conjugated estrogens)
+            "Ethambutol": 400,            // Antitubercular
+            "Ethinylestradiol": 0.03,     // Contraceptive
+            "Ethionamide": 250,           // Antitubercular
+            "Etodolac": 400,              // NSAID
+            "Etoposide": 100,             // Anticancer (mg/dose IV)
+            "Etoricoxib": 90,             // NSAID
+            "Everolimus": 0.75,           // Immunosuppressant
+            "Ezetimibe": 10,              // Cholesterol-lowering
+            "Famotidine": 20,             // H2 blocker
+            "Felodipine": 5,              // Calcium channel blocker
+            "Fenofibrate": 160,           // Lipid-lowering
+            "Fentanyl": 0.1,              // Opioid (mg/dose IV)
+            "Ferrous Fumarate": 200,      // Iron supplement
+            "Ferrous Sulfate": 325,       // Iron supplement
+            "Finasteride": 5,             // 5-alpha reductase inhibitor
+            "Fluconazole": 150,           // Antifungal, single dose
+            "Fludrocortisone": 0.1,       // Corticosteroid
+            "Flumazenil": 0.5,            // Benzodiazepine antagonist (mg/dose IV)
+            "Fluoxetine": 20,             // Antidepressant
+            "Flupenthixol": 0.5,          // Antipsychotic
+            "Fluticasone": 0.05,          // Corticosteroid (mg/inhalation)
+            "Folic Acid": 5,              // Vitamin
+            "Formoterol": 0.012,          // Bronchodilator (mg/inhalation)
+            "Fosfomycin": 3000,           // Antibiotic (mg/single dose)
+            "Furosemide": 40,             // Diuretic
+            "Gabapentin": 300,            // Anticonvulsant
+            "Gemfibrozil": 600,           // Lipid-lowering
+            "Gentamicin": 80,             // Antibiotic (mg/dose IV)
+            "Glibenclamide": 5,           // Antidiabetic
+            "Gliclazide": 80,             // Antidiabetic
+            "Glimepiride": 2,             // Antidiabetic
+            "Glipizide": 5,               // Antidiabetic
+            "Glucagon": 1,                // Hypoglycemia treatment (mg/dose)
+            "Glycopyrrolate": 0.2,        // Anticholinergic (mg/dose IV)
+            "Goserelin": 3.6,             // Anticancer (mg/dose SC)
+            "Granisetron": 1,             // Antiemetic (mg/dose IV)
+            "Haloperidol": 5,             // Antipsychotic
+            "Heparin": 5000,              // Anticoagulant (IU/dose)
+            "Hydralazine": 25,            // Antihypertensive
+            "Hydrochlorothiazide": 25,    // Diuretic
+            "Hydrocortisone": 20,         // Corticosteroid
+            "Hydroxyzine": 25,            // Antihistamine
+            "Ibuprofen": 400,             // NSAID
+            "Imatinib": 400,              // Anticancer
+            "Imipenem": 500,              // Antibiotic (mg/dose IV)
+            "Imipramine": 25,             // Antidepressant
+            "Indapamide": 1.5,            // Diuretic
+            "Indomethacin": 25,           // NSAID
+            "Insulin Aspart": 100,        // Insulin (IU/mL)
+            "Insulin Glargine": 100,      // Insulin (IU/mL)
+            "Insulin Regular": 100,       // Insulin (IU/mL)
+            "Interferon Alpha": 3,        // Antiviral (million IU/dose)
+            "Ipratropium": 0.02,          // Bronchodilator (mg/inhalation)
+            "Iron Polymaltose": 100,      // Iron supplement
+            "Isoniazid": 300,             // Antitubercular
+            "Isosorbide Dinitrate": 10,   // Antianginal
+            "Isotretinoin": 20,           // Acne treatment
+            "Itraconazole": 200,          // Antifungal
+            "Ivabradine": 5,              // Heart rate reducer
+            "Ivermectin": 6,              // Antiparasitic
+            "Janumet (Sitagliptin + Metformin)": 50, // Antidiabetic (Sitagliptin dose per tablet)
+            "Joulferon (Interferon Alfa-2a)": 3, // Antiviral (million IU/dose)
+            "Kanamycin": 1000,            // Antibiotic (mg/dose IM)
+            "Ketamine": 50,               // Anesthetic (mg/dose IV)
+            "Ketoconazole": 200,          // Antifungal
+            "Ketoprofen": 50,             // NSAID
+            "Ketorolac": 10,              // NSAID (mg/dose IV/IM)
+            "Labetalol": 100,             // Beta-blocker
+            "Lactulose": 10000,           // Laxative (mg/15mL)
+            "Lamivudine": 150,            // Antiretroviral
+            "Lamotrigine": 100,           // Anticonvulsant
+            "Lansoprazole": 30,           // Proton pump inhibitor
+            "Latanoprost": 0.05,          // Glaucoma (mg/mL eye drops)
+            "Ledipasvir + Sofosbuvir": 90, // Antiviral (Ledipasvir dose per tablet)
+            "Levetiracetam": 500,         // Anticonvulsant
+            "Levocetirizine": 5,          // Antihistamine
+            "Levodopa + Carbidopa": 100,  // Antiparkinsonian (Levodopa dose per tablet)
+            "Levofloxacin": 500,          // Antibiotic
+            "Levothyroxine": 0.1,         // Thyroid hormone
+            "Lidocaine": 20,              // Local anesthetic (mg/mL)
+            "Lignocaine": 20,             // Local anesthetic (mg/mL)
+            "Linagliptin": 5,             // Antidiabetic
+            "Linezolid": 600,             // Antibiotic
+            "Liothyronine": 0.025,        // Thyroid hormone
+            "Liraglutide": 0.6,           // Antidiabetic (mg/dose)
+            "Lisinopril": 10,             // ACE inhibitor
+            "Lithium Carbonate": 300,     // Mood stabilizer
+            "Loperamide": 2,              // Antidiarrheal
+            "Loratadine": 10,             // Antihistamine
+            "Lorazepam": 1,               // Anxiolytic
+            "Losartan": 50,               // Antihypertensive
+            "Lovastatin": 20,             // Statin
+            "Lumefantrine": 480,          // Antimalarial (standalone dose)
+            "Lurasidone": 40,             // Antipsychotic
+            "Macrogol": 17000,            // Laxative (mg/sachet)
+            "Magnesium Hydroxide": 400,   // Antacid
+            "Magnesium Sulfate": 1000,    // Laxative, anticonvulsant (mg/dose IV)
+            "Mannitol": 20000,            // Diuretic (mg/100mL IV)
+            "Mebendazole": 100,           // Anthelmintic
+            "Mebeverine": 135,            // Antispasmodic
+            "Mecobalamin": 0.5,           // Vitamin B12
+            "Medroxyprogesterone": 10,    // Hormone
+            "Melatonin": 3,               // Sleep aid
+            "Meloxicam": 7.5,             // NSAID
+            "Memantine": 10,              // Alzheimer’s treatment
+            "Meperidine": 50,             // Opioid
+            "Mercaptopurine": 50,         // Anticancer
+            "Meropenem": 1000,            // Antibiotic (mg/dose IV)
+            "Mesalamine": 400,            // Anti-inflammatory
+            "Metamizole": 500,            // Analgesic
+            "Metformin": 500,             // Antidiabetic
+            "Methadone": 10,              // Opioid
+            "Methimazole": 5,             // Antithyroid
+            "Methocarbamol": 500,         // Muscle relaxant
+            "Methotrexate": 2.5,          // Anticancer, immunosuppressant
+            "Methylcobalamin": 0.5,       // Vitamin B12
+            "Methylprednisolone": 4,      // Corticosteroid
+            "Metoclopramide": 10,         // Antiemetic
+            "Metoprolol": 50,             // Beta-blocker
+            "Metronidazole": 400,         // Antibiotic
+            "Midazolam": 5,               // Sedative (mg/dose IV)
+            "Mifepristone": 200,          // Abortifacient
+            "Miglitol": 50,               // Antidiabetic
+            "Minoxidil": 5,               // Antihypertensive
+            "Mirabegron": 25,             // Overactive bladder
+            "Mirtazapine": 15,            // Antidepressant
+            "Misoprostol": 0.2,           // Prostaglandin
+            "Mitomycin": 20,              // Anticancer (mg/dose IV)
+            "Montelukast": 10,            // Anti-asthmatic
+            "Morphine": 10,               // Opioid (mg/dose IV)
+            "Moxifloxacin": 400,          // Antibiotic
+            "Multivitamins": 1,           // Supplement (unit dose)
+            "Nalbuphine": 10,             // Opioid (mg/dose IV)
+            "Naloxone": 0.4,              // Opioid antagonist (mg/dose IV)
+            "Naproxen": 250,              // NSAID
+            "Nateglinide": 120,           // Antidiabetic
+            "Nebivolol": 5,               // Beta-blocker
+            "Neomycin": 500,              // Antibiotic
+            "Nevirapine": 200,            // Antiretroviral
+            "Nicardipine": 20,            // Calcium channel blocker
+            "Niclosamide": 500,           // Anthelmintic
+            "Nicotinamide": 100,          // Vitamin B3
+            "Nicotinic Acid": 500,        // Lipid-lowering
+            "Nifedipine": 10,             // Calcium channel blocker
+            "Nilotinib": 200,             // Anticancer
+            "Nimodipine": 30,             // Calcium channel blocker
+            "Nitrofurantoin": 100,        // Antibiotic
+            "Nitroglycerin": 0.5,         // Antianginal
+            "Nitrous Oxide": 100,         // Anesthetic (mg equivalent)
+            "Nizatidine": 150,            // H2 blocker
+            "Norepinephrine": 4,          // Vasopressor (mg/dose IV)
+            "Norfloxacin": 400,           // Antibiotic
+            "Nortriptyline": 25,          // Antidepressant
+            "Nystatin": 100000,           // Antifungal (IU/dose)
+            "Octreotide": 0.1,            // Hormone (mg/dose IV)
+            "Ofloxacin": 200,             // Antibiotic
+            "Olanzapine": 10,             // Antipsychotic
+            "Olmesartan": 20,             // Antihypertensive
+            "Omeprazole": 20,             // Proton pump inhibitor
+            "Ondansetron": 8,             // Antiemetic
+            "Orlistat": 120,              // Anti-obesity
+            "Oseltamivir": 75,            // Antiviral
+            "Oxaliplatin": 100,           // Anticancer (mg/dose IV)
+            "Oxazepam": 15,               // Anxiolytic
+            "Oxcarbazepine": 300,         // Anticonvulsant
+            "Oxymetazoline": 0.5,         // Decongestant (mg/mL)
+            "Oxytetracycline": 250,       // Antibiotic
+            "Oxytocin": 10,               // Uterotonic (IU/dose)
+            "Paclitaxel": 100,            // Anticancer (mg/dose IV)
+            "Paliperidone": 3,            // Antipsychotic
+            "Pancreatin": 25000,          // Digestive enzyme (IU/dose)
+            "Pantoprazole": 40,           // Proton pump inhibitor
+            "Paracetamol (Acetaminophen)": 500, // Analgesic, antipyretic
+            "Paroxetine": 20,             // Antidepressant
+            "Pefloxacin": 400,            // Antibiotic
+            "Peginterferon Alfa": 180,    // Antiviral (mcg/dose)
+            "Penicillin G": 1200,         // Antibiotic (mg/dose IM)
+            "Pentazocine": 50,            // Opioid
+            "Pentoxifylline": 400,        // Vasodilator
+            "Perindopril": 4,             // ACE inhibitor
+            "Permethrin": 50,             // Scabicide (mg/g)
+            "Pheniramine": 25,            // Antihistamine
+            "Phenobarbital": 60,          // Anticonvulsant
+            "Phenytoin": 100,             // Anticonvulsant
+            "Pioglitazanone": 15,         // Antidiabetic
+            "Piperacillin + Tazobactam": 4000, // Antibiotic (Piperacillin dose IV)
+            "Piroxicam": 20,              // NSAID
+            "Polyethylene Glycol": 17000, // Laxative (mg/sachet)
+            "Potassium Chloride": 600,    // Electrolyte
+            "Pramipexole": 0.25,          // Antiparkinsonian
+            "Prasugrel": 10,              // Antiplatelet
+            "Praziquantel": 600,          // Anthelmintic
+            "Prazosin": 1,                // Alpha-blocker
+            "Prednisolone": 5,            // Corticosteroid
+            "Prednisone": 10,             // Corticosteroid
+            "Pregabalin": 75,             // Anticonvulsant
+            "Primaquine": 15,             // Antimalarial
+            "Prochlorperazine": 5,        // Antiemetic
+            "Progesterone": 200,          // Hormone
+            "Promethazine": 25,           // Antihistamine
+            "Propanolol": 40,             // Beta-blocker (likely Propranolol typo)
+            "Propofol": 200,              // Anesthetic (mg/dose IV)
+            "Propranolol": 40,            // Beta-blocker
+            "Propylthiouracil": 50,       // Antithyroid
+            "Pseudoephedrine": 60,        // Decongestant
+            "Psyllium Husk": 3500,        // Laxative (mg/dose)
+            "Pyrantel Pamoate": 250,      // Anthelmintic
+            "Pyrazinamide": 500,          // Antitubercular
+            "Pyridoxine (Vitamin B6)": 50, // Vitamin
+            "Quetiapine": 100,            // Antipsychotic
+            "Quinidine": 200,             // Antiarrhythmic
+            "Quinine": 300,               // Antimalarial
+            "Rabeprazole": 20,            // Proton pump inhibitor
+            "Rabies Vaccine": 1,          // Vaccine (unit dose)
+            "Ramipril": 5,                // ACE inhibitor
+            "Ranitidine": 150,            // H2 blocker (withdrawn in many places)
+            "Raloxifene": 60,             // Osteoporosis treatment
+            "Raltegravir": 400,           // Antiretroviral
+            "Ranolazine": 500,            // Antianginal
+            "Rasagiline": 1,              // Antiparkinsonian
+            "Rifaximin": 550,             // Antibiotic
+            "Rifampin": 600,              // Antitubercular
+            "Rifapentine": 150,           // Antitubercular
+            "Riluzole": 50,               // ALS treatment
+            "Ringer’s Lactate": 1000,     // IV fluid (mL equivalent)
+            "Risperidone": 2,             // Antipsychotic
+            "Ritonavir": 100,             // Antiretroviral
+            "Rivaroxaban": 10,            // Anticoagulant
+            "Rizatriptan": 10,            // Migraine treatment
+            "Ropinirole": 0.25,           // Antiparkinsonian
+            "Rosiglitazone": 4,           // Antidiabetic
+            "Rosuvastatin": 10,           // Statin
+            "Roxithromycin": 150,         // Antibiotic
+            "Salbutamol": 4,              // Bronchodilator
+            "Salicylic Acid": 20,         // Keratolytic (mg/g topical)
+            "Saquinavir": 1000,           // Antiretroviral
+            "Saxagliptin": 5,             // Antidiabetic
+            "Secnidazole": 1000,          // Antiprotozoal
+            "Selegiline": 5,              // Antiparkinsonian
+            "Sertraline": 50,             // Antidepressant
+            "Sildenafil": 50,             // Erectile dysfunction
+            "Silodosin": 8,               // Alpha-blocker
+            "Simvastatin": 20,            // Statin
+            "Sitagliptin": 100,           // Antidiabetic
+            "Sodium Bicarbonate": 500,    // Antacid
+            "Sodium Chloride": 9000,      // IV fluid (mg/100mL)
+            "Sodium Cromoglycate": 20,    // Anti-allergic (mg/dose)
+            "Sodium Fusidate": 250,       // Antibiotic
+            "Sodium Valproate": 200,      // Anticonvulsant
+            "Sofosbuvir": 400,            // Antiviral
+            "Sorafenib": 200,             // Anticancer
+            "Spironolactone": 25,         // Diuretic
+            "Stavudine": 30,              // Antiretroviral
+            "Streptokinase": 1500000,     // Thrombolytic (IU/dose)
+            "Streptomycin": 1000,         // Antitubercular (mg/dose IM)
+            "Sucralfate": 1000,           // Antiulcer
+            "Sulfasalazine": 500,         // Anti-inflammatory
+            "Sulfadiazine": 500,          // Antibiotic
+            "Sulfamethoxazole + Trimethoprim": 400, // Antibiotic (Sulfamethoxazole dose)
+            "Sumatriptan": 50,            // Migraine treatment
+            "Sunitinib": 50,              // Anticancer
+            "Suvorexant": 10,             // Sleep aid
+            "Tacrolimus": 1,              // Immunosuppressant
+            "Tamoxifen": 20,              // Anticancer
+            "Tamsulosin": 0.4,            // Alpha-blocker
+            "Tenofovir": 300,             // Antiretroviral
+            "Terbinafine": 250,           // Antifungal
+            "Terbutaline": 5,             // Bronchodilator
+            "Terlipressin": 1,            // Vasoconstrictor (mg/dose IV)
+            "Tetracycline": 250,          // Antibiotic
+            "Thiamine (Vitamin B1)": 100, // Vitamin
+            "Thioridazine": 25,           // Antipsychotic
+            "Thiopental": 500,            // Anesthetic (mg/dose IV)
+            "Tiotropium": 0.018,          // Bronchodilator (mg/inhalation)
+            "Tizanidine": 2,              // Muscle relaxant
+            "Tobramycin": 80,             // Antibiotic (mg/dose IV)
+            "Topiramate": 50,             // Anticonvulsant
+            "Topotecan": 4,               // Anticancer (mg/dose IV)
+            "Torsemide": 10,              // Diuretic
+            "Tramadol": 50,               // Opioid
+            "Trandolapril": 2,            // ACE inhibitor
+            "Tranexamic Acid": 500,       // Antifibrinolytic
+            "Trastuzumab": 440,           // Anticancer (mg/dose IV)
+            "Trazodone": 50,              // Antidepressant
+            "Triamcinolone": 4,           // Corticosteroid
+            "Triamterene": 50,            // Diuretic
+            "Triazolam": 0.25,            // Sedative
+            "Trichlormethiazide": 2,      // Diuretic
+            "Trifluoperazine": 5,         // Antipsychotic
+            "Trimethoprim": 100,          // Antibiotic (standalone)
+            "Tropicamide": 10,            // Mydriatic (mg/mL eye drops)
+            "Tryptophan": 500,            // Amino acid supplement
+            "Tuberculosis Vaccine (BCG)": 0.1, // Vaccine (mL/dose)
+            "Typhoid Vaccine": 0.5,       // Vaccine (mL/dose)
+            "Ursodeoxycholic Acid": 300,  // Hepatoprotective
+            "Ustekinumab": 45,            // Biologic (mg/dose SC)
+            "Valacyclovir": 500,          // Antiviral
+            "Valganciclovir": 450,        // Antiviral
+            "Valproic Acid": 250,         // Anticonvulsant
+            "Valsartan": 80,              // Antihypertensive
+            "Vancomycin": 1000,           // Antibiotic (mg/dose IV)
+            "Varicella Vaccine": 0.5,     // Vaccine (mL/dose)
+            "Vecuronium": 10,             // Muscle relaxant (mg/dose IV)
+            "Vemurafenib": 960,           // Anticancer
+            "Venlafaxine": 75,            // Antidepressant
+            "Verapamil": 80,              // Calcium channel blocker
+            "Vidarabine": 200,            // Antiviral (mg/dose IV)
+            "Vilanterol": 0.025,          // Bronchodilator (mg/inhalation)
+            "Vilazodone": 20,             // Antidepressant
+            "Vinblastine": 10,            // Anticancer (mg/dose IV)
+            "Vincristine": 2,             // Anticancer (mg/dose IV)
+            "Vinpocetine": 5,             // Neuroprotective
+            "Vismodegib": 150,            // Anticancer
+            "Vitamin A": 5000,            // Vitamin (IU/dose)
+            "Vitamin B Complex": 1,       // Vitamin (unit dose)
+            "Vitamin B12 (Cyanocobalamin)": 1000, // Vitamin (mcg/dose)
+            "Vitamin C (Ascorbic Acid)": 500, // Vitamin
+            "Vitamin D (Cholecalciferol)": 2000, // Vitamin (IU/dose)
+            "Vitamin E (Tocopherol)": 400, // Vitamin (IU/dose)
+            "Vitamin K": 10,              // Vitamin (mg/dose)
+            "Voriconazole": 200,          // Antifungal
+            "Vortioxetine": 10,           // Antidepressant
+            "Warfarin": 5,                // Anticoagulant
+            "Xylometazoline Hydrochloride": 1, // Decongestant (mg/mL)
+            "Yellow Fever Vaccine": 0.5,  // Vaccine (mL/dose)
+            "Zafirlukast": 20,            // Anti-asthmatic
+            "Zidovudine": 300,            // Antiretroviral
+            "Zileuton": 600,              // Anti-asthmatic
+            "Zinc Acetate": 50,           // Zinc supplement
+            "Zinc Gluconate": 50,         // Zinc supplement
+            "Zinc Sulfate": 20,           // Zinc supplement
+            "Ziprasidone": 40,            // Antipsychotic
+            "Zoledronic Acid": 4,         // Bisphosphonate (mg/dose IV)
+            "Zolmitriptan": 2.5,          // Migraine treatment
+            "Zolpidem": 10,               // Sedative
+            "Zonisamide": 100,            // Anticonvulsant
+            "Zopiclone": 7.5,             // Sedative
+            "Zoster Vaccine": 0.65,       // Vaccine (mL/dose)
+            "Zuclopenthixol": 10          // Antipsychotic
+        };
+        const medicineList = Object.keys(medicineData).sort();
+
+        // Recommendation suggestions
+        const recommendationList = [
+            "Take after meals",
+            "Take before meals",
+            "Avoid during pregnancy",
+            "Take with water",
+            "Avoid alcohol",
+            "Take at bedtime"
+        ].sort();
+
+        // Chief Complaints suggestions
+        const chiefComplaintsList = [
+            "Fever for 3 days",
+            "Cough and cold",
+            "Headache since 2 days",
+            "Abdominal pain",
+            "Nausea and vomiting",
+            "Fatigue and weakness",
+            "Chest pain",
+            "Shortness of breath",
+            "Skin rash",
+            "Joint pain"
+        ].sort();
+
+        // Drug History suggestions
+        const drugHistoryList = [
+            "Aspirin 75mg daily",
+            "Metformin 500mg twice daily",
+            "No known drug allergies",
+            "Paracetamol as needed",
+            "Amoxicillin 500mg for 5 days",
+            "Insulin 10 units daily",
+            "Atorvastatin 20mg at night",
+            "Levothyroxine 50mcg daily",
+            "Salbutamol inhaler as needed",
+            "History of penicillin allergy"
+        ].sort();
+
+        // Tests suggestions
+        const testsList = [
+            "Complete Blood Count (CBC)",
+            "Blood Sugar Fasting",
+            "Lipid Profile",
+            "Chest X-Ray",
+            "ECG",
+            "Urine Routine",
+            "Liver Function Test (LFT)",
+            "Kidney Function Test (KFT)",
+            "Thyroid Profile",
+            "HbA1c"
+        ].sort();
+
+        // Function to populate suggestions
+        function showSuggestions(input, suggestionsDiv, items) {
+            suggestionsDiv.innerHTML = "";
+            const query = input.value.toLowerCase();
+            const filteredItems = items.filter(item => item.toLowerCase().includes(query));
+
+            if (filteredItems.length > 0) {
+                filteredItems.forEach(item => {
+                    const suggestion = document.createElement("div");
+                    suggestion.className = "suggestion-item";
+                    suggestion.textContent = item;
+                    suggestion.addEventListener("click", () => {
+                        // For textareas, append the suggestion on a new line if there's already content
+                        if (input.tagName.toLowerCase() === "textarea") {
+                            const currentValue = input.value.trim();
+                            input.value = currentValue ? `${currentValue}\n${item}` : item;
+                        } else {
+                            input.value = item;
+                        }
+                        suggestionsDiv.innerHTML = ""; // Clear suggestions after selection
+                        suggestionsDiv.style.display = "none";
+                        if (input.classList.contains("medicine-name")) {
+                            const row = input.closest("tr");
+                            const doseInput = row.querySelector(".dose");
+                            doseInput.value = medicineData[item] || "";
+                        }
+                    });
+                    suggestionsDiv.appendChild(suggestion);
+                });
+                suggestionsDiv.style.display = "block";
+            } else {
+                suggestionsDiv.style.display = "none";
+            }
+        }
+
+        // Function to setup autocomplete for a given input and suggestions div
+        function setupAutocomplete(input, suggestionsDiv, items) {
+            // Show suggestions on focus
+            input.addEventListener("focus", () => {
+                showSuggestions(input, suggestionsDiv, items);
+            });
+
+            // Update suggestions on input
+            input.addEventListener("input", () => {
+                showSuggestions(input, suggestionsDiv, items);
+            });
+
+            // Hide suggestions when clicking outside
+            document.addEventListener("click", (e) => {
+                if (!input.contains(e.target) && !suggestionsDiv.contains(e.target)) {
+                    suggestionsDiv.style.display = "none";
+                }
+            });
+        }
+
+        // Function to initialize autocomplete for all medicine rows
+        function initializeMedicineRowAutocomplete(row) {
+            const medicineInput = row.querySelector(".medicine-name");
+            const medicineSuggestions = row.querySelector(".medicine-suggestions");
+            const recommendationInput = row.querySelector(".recommendation");
+            const recommendationSuggestions = row.querySelector(".recommendation-suggestions");
+
+            if (medicineInput && medicineSuggestions) {
+                setupAutocomplete(medicineInput, medicineSuggestions, medicineList);
+            }
+
+            if (recommendationInput && recommendationSuggestions) {
+                setupAutocomplete(recommendationInput, recommendationSuggestions, recommendationList);
+            }
+        }
+
+        // Setup autocomplete for Chief Complaints
+        const chiefComplaintsInput = document.querySelector("#chiefComplaints");
+        const chiefComplaintsSuggestions = document.querySelector(".chief-complaints-suggestions");
+        setupAutocomplete(chiefComplaintsInput, chiefComplaintsSuggestions, chiefComplaintsList);
+
+        // Setup autocomplete for Drug History
+        const drugHistoryInput = document.querySelector("#drugHistory");
+        const drugHistorySuggestions = document.querySelector(".drug-history-suggestions");
+        setupAutocomplete(drugHistoryInput, drugHistorySuggestions, drugHistoryList);
+
+        // Setup autocomplete for Tests
+        const testsInput = document.querySelector("#tests");
+        const testsSuggestions = document.querySelector(".tests-suggestions");
+        setupAutocomplete(testsInput, testsSuggestions, testsList);
+
+        // Setup autocomplete for the initial medicine row
+        const initialRow = document.querySelector(".medicine-row");
+        initializeMedicineRowAutocomplete(initialRow);
+
+        // Add current date
+        document.getElementById("currentDate").textContent = new Date().toLocaleDateString();
+
+        // Add new medicine row
+        document.getElementById("addMedicine").addEventListener("click", function() {
+            const tbody = document.querySelector("#medicineTable tbody");
+            const newRow = document.createElement("tr");
+            newRow.className = "medicine-row";
+            newRow.innerHTML = `
+                <td>
+                    <div class="autocomplete">
+                        <input type="text" class="medicine-name" placeholder="Search Medicine">
+                        <div class="suggestions medicine-suggestions"></div>
+                    </div>
+                    <span class="print-value" data-for="medicine-name"></span>
+                </td>
+                <td>
+                    <input type="number" class="dose" min="0">
+                    <span class="print-value" data-for="dose"></span>
+                </td>
+                <td>
+                    <select class="route">
+                        <option value="" disabled selected>Select Route</option>
+                        <option value="Oral">Oral</option>
+                        <option value="IV">IV</option>
+                        <option value="Topical">Topical</option>
+                    </select>
+                    <span class="print-value" data-for="route"></span>
+                </td>
+                <td>
+                    <input type="number" class="morning" min="0">
+                    <span class="print-value" data-for="morning"></span>
+                </td>
+                <td>
+                    <input type="number" class="afternoon" min="0">
+                    <span class="print-value" data-for="afternoon"></span>
+                </td>
+                <td>
+                    <input type="number" class="night" min="0">
+                    <span class="print-value" data-for="night"></span>
+                </td>
+                <td>
+                    <div class="autocomplete">
+                        <input type="text" class="recommendation" placeholder="Add Recommendation">
+                        <div class="suggestions recommendation-suggestions"></div>
+                    </div>
+                    <span class="print-value" data-for="recommendation"></span>
+                </td>
+            `;
+            tbody.appendChild(newRow);
+
+            // Initialize autocomplete for the new row
+            initializeMedicineRowAutocomplete(newRow);
+        });
+
+        // Remove last medicine row
+        document.getElementById("removeMedicine").addEventListener("click", function() {
+            const tbody = document.querySelector("#medicineTable tbody");
+            const rows = tbody.querySelectorAll(".medicine-row");
+            if (rows.length > 1) { // Ensure at least one row remains
+                tbody.removeChild(rows[rows.length - 1]);
+            }
+        });
+
+        // Update print values before printing
+        function updatePrintValues() {
+            document.querySelectorAll(".print-value").forEach(span => {
+                const inputId = span.getAttribute("data-for");
+                if (inputId === "gender") {
+                    const selectedGender = document.querySelector("input[name='gender']:checked");
+                    span.textContent = selectedGender ? selectedGender.value : "";
+                } else {
+                    const input = span.previousElementSibling.querySelector("input, select, textarea") || span.previousElementSibling;
+                    span.textContent = input.value || "";
+                }
+            });
+        }
+
+        // Generate Prescription (Print as PDF)
+        document.getElementById("generatePrescription").addEventListener("click", function() {
+            updatePrintValues();
+            window.print();
+        });
+    </script>
+</body>
+</html>

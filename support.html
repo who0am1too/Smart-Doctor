@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Doctor - Support</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">Smart Doctor</div>
+        <nav class="nav-menu">
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="contact.html">Contact Us</a>
+            <a href="support.html" class="active">Support</a>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <section class="main-content">
+        <h1>Support</h1>
+        <p>Need help with Smart Doctor? Our support team is here to assist you with any issues or questions you may have.</p>
+        <p>For immediate assistance, please contact us via email or phone:</p>
+        <p><strong>Email:</strong> mehediete2004034@gmail.com</p>
+        <p><strong>Mobile:</strong> 01773467779</p>
+        <a href="index.html" class="learn-more">Back to Home</a>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div>
+            <div class="logo">Smart Doctor</div>
+            <p>© 2025 Smart Doctor. All Rights Reserved.</p>
+        </div>
+        <div>
+            <h3>Quick Links</h3>
+            <p><a href="about.html">About</a></p>
+            <p><a href="contact.html">Contact Us</a></p>
+            <p><a href="support.html">Support</a></p>
+        </div>
+        <div>
+            <h3>Contact Information</h3>
+            <p>Mobile: 01773467779</p>
+            <p>Email: mehediete2004034@gmail.com</p>
+            <p>Address: Rajshahi University of Engineering & Technology (RUET), Kazla, Rajshahi-6204, Bangladesh</p>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>

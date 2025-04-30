@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Doctor - Home</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .hero {
+            background: url('home.jpg') no-repeat center/cover;
+            padding: 5rem 2rem;
+            text-align: center;
+            color: #FFFFFF;
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">Smart Doctor</div>
+        <nav class="nav-menu">
+            <a href="index.html" class="active">Home</a>
+            <a href="medicinestudy.html">Medicine Study</a>
+            <a href="about.html">About</a>
+            <a href="contact.html">Contact Us</a>
+            <a href="support.html">Support</a>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Smart Doctor - Your Digital Prescription Partner</h1>
+            <p>Streamline prescription creation with accuracy and ease.</p>
+            <a href="prescription.html" class="cta-button">Generate Prescription</a>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="main-content">
+        <h1>About Smart Doctor</h1>
+        <p>Smart Doctor is a cutting-edge prescription management system for medical professionals, enhancing accuracy and patient care through technology.</p>
+        <a href="about.html" class="learn-more">Learn More</a>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div>
+            <div class="logo">Smart Doctor</div>
+            <p>© 2025 Smart Doctor. All Rights Reserved.</p>
+        </div>
+        <div>
+            <h3>Quick Links</h3>
+            <p><a href="about.html">About</a></p>
+            <p><a href="contact.html">Contact Us</a></p>
+            <p><a href="support.html">Support</a></p>
+        </div>
+        <div>
+            <h3>Contact Information</h3>
+            <p>Mobile: 01773467779</p>
+            <p>Email: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="d6fbf3fef3f2fff3e2f3a4a6a6a2a6a5a2d6f1fbf7fffab8f5f9fb">[email&#160;protected]</a></p>
+            <p>Address: Rajshahi University of Engineering & Technology (RUET), Kazla, Rajshahi-6204, Bangladesh</p>
+        </div>
+    </footer>
+
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9374114bae37b036',t:'MTc0NTgxNzE3Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

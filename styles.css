@@ -1,0 +1,130 @@
+/* styles.css */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
+}
+
+body {
+    line-height: 1.6;
+    color: #333;
+}
+
+/* Header Styles */
+.header {
+    background: #0A74DA;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    color: #FFFFFF;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.nav-menu {
+    display: flex;
+    gap: 2rem;
+}
+
+.nav-menu a {
+    color: #FFFFFF;
+    text-decoration: none;
+    font-weight: 400;
+    transition: color 0.3s ease;
+}
+
+.nav-menu a:hover {
+    color: #e0e0e0;
+}
+
+.nav-menu a.active {
+    font-weight: 700;
+}
+
+/* Main Content */
+.main-content {
+    padding: 4rem 2rem;
+    text-align: center;
+}
+
+.main-content h1 {
+    color: #0A74DA;
+    margin-bottom: 1rem;
+}
+
+.main-content p {
+    max-width: 800px;
+    margin: 0 auto 2rem;
+}
+
+/* Buttons */
+.cta-button, .learn-more {
+    padding: 0.8rem 1.5rem;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.cta-button {
+    background: #0A74DA;
+    color: #FFFFFF;
+    border: none;
+}
+
+.cta-button:hover {
+    transform: scale(1.05);
+    background: #085bb5;
+}
+
+.learn-more {
+    background: transparent;
+    border: 2px solid #0A74DA;
+    color: #0A74DA;
+}
+
+.learn-more:hover {
+    background: #0A74DA;
+    color: #FFFFFF;
+}
+
+/* Footer */
+.footer {
+    background: #0A74DA;
+    color: #FFFFFF;
+    padding: 2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+}
+
+.footer a {
+    color: #FFFFFF;
+    text-decoration: none;
+}
+
+.footer a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .header {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .nav-menu {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .main-content h1 {
+        font-size: 1.8rem;
+    }
+}

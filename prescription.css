@@ -1,0 +1,507 @@
+/* Reset default styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f5f7fa;
+  line-height: 1.6;
+}
+
+.prescription-container {
+  max-width: 900px;
+  margin: 30px auto;
+  padding: 25px;
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
+}
+
+/* Header Styling */
+header {
+  text-align: center;
+  border-bottom: 2px solid #007bff;
+  padding-bottom: 15px;
+  margin-bottom: 25px;
+}
+
+header h1 {
+  font-size: 26px;
+  color: #1a3c6d;
+  font-weight: 600;
+}
+
+header p {
+  font-size: 14px;
+  color: #4a4a4a;
+  margin: 3px 0;
+}
+
+header a {
+  color: #007bff;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+header a:hover {
+  color: #0056b3;
+  text-decoration: underline;
+}
+
+/* Section Styling */
+section {
+  margin-bottom: 30px;
+}
+
+h2 {
+  font-size: 20px;
+  color: #1a3c6d;
+  font-weight: 600;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 8px;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Form Group Styling */
+.form-group {
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.form-group label {
+  width: 130px;
+  font-weight: 500;
+  color: #333;
+  font-size: 15px;
+}
+
+.form-group input,
+.form-group textarea {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #d0d0d0;
+  border-radius: 6px;
+  font-size: 14px;
+  min-width: 0;
+  background-color: #f9f9f9;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  border-color: #007bff;
+  background-color: #fff;
+  outline: none;
+}
+
+.form-group input[type="radio"] {
+  width: auto;
+  margin-right: 8px;
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* Medicine Table Styling */
+#medicineTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+#medicineTable th,
+#medicineTable td {
+  border: 1px solid #e0e0e0;
+  padding: 12px;
+  text-align: left;
+  font-size: 14px;
+}
+
+#medicineTable th {
+  background-color: #007bff;
+  color: #fff;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.sub-header th {
+  background-color: #f1f5f9;
+  color: #333;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+/* Autocomplete Styling */
+.autocomplete {
+  position: relative;
+  width: 100%;
+}
+
+.medicine-name, .recommendation {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #d0d0d0;
+  border-radius: 6px;
+  font-size: 14px;
+  background-color: #f9f9f9;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.medicine-name:focus, .recommendation:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
+  outline: none;
+  background-color: #fff;
+}
+
+.suggestions,
+.medicine-suggestions,
+.recommendation-suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  max-height: 150px;
+  overflow-y: auto;
+  z-index: 100;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  margin-top: 2px;
+  display: none;
+  scrollbar-width: thin;
+  scrollbar-color: #c0c0c0 #f0f0f0;
+}
+
+.chief-complaints-suggestions,
+.drug-history-suggestions,
+.tests-suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 100;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  margin-top: 4px;
+  display: none;
+}
+
+/* Custom Scrollbar for Medicine and Recommendation Suggestions */
+.medicine-suggestions::-webkit-scrollbar,
+.recommendation-suggestions::-webkit-scrollbar {
+  width: 6px;
+}
+
+.medicine-suggestions::-webkit-scrollbar-track,
+.recommendation-suggestions::-webkit-scrollbar-track {
+  background: #f0f0f0;
+  border-radius: 8px;
+}
+
+.medicine-suggestions::-webkit-scrollbar-thumb,
+.recommendation-suggestions::-webkit-scrollbar-thumb {
+  background: #c0c0c0;
+  border-radius: 8px;
+}
+
+.medicine-suggestions::-webkit-scrollbar-thumb:hover,
+.recommendation-suggestions::-webkit-scrollbar-thumb:hover {
+  background: #a0a0a0;
+}
+
+.suggestion-item {
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-size: 14px;
+  color: #333;
+}
+
+.suggestion-item:hover {
+  background-color: #e8f0fe;
+  color: #1a73e8;
+}
+
+/* Other Input and Select Styling */
+.dose, .morning, .afternoon, .night, .route {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #d0d0d0;
+  border-radius: 6px;
+  font-size: 14px;
+  background-color: #f9f9f9;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+.dose:focus, .morning:focus, .afternoon:focus, .night:focus, .route:focus {
+  border-color: #007bff;
+  background-color: #fff;
+  outline: none;
+}
+
+/* Button Group Styling */
+.button-group {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+/* Add Medicine Button Styling */
+#addMedicine {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+#addMedicine:hover {
+  background-color: #0056b3;
+}
+
+/* Remove Medicine Button Styling */
+#removeMedicine {
+  background-color: #dc3545;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+#removeMedicine:hover {
+  background-color: #c82333;
+}
+
+/* Footer Styling */
+footer {
+  text-align: right;
+  font-size: 13px;
+  color: #4a4a4a;
+  border-top: 1px solid #e0e0e0;
+  padding-top: 10px;
+  margin-bottom: 20px;
+}
+
+/* Generate Prescription Button Styling */
+.button-container {
+  text-align: center;
+}
+
+#generatePrescription {
+  background-color: #28a745;
+  color: #fff;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+#generatePrescription:hover {
+  background-color: #218838;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+  .prescription-container {
+      margin: 15px;
+      padding: 15px;
+  }
+  .form-group {
+      flex-direction: column;
+      align-items: flex-start;
+  }
+  .form-group label {
+      width: 100%;
+      margin-bottom: 8px;
+  }
+  .form-group input,
+  .form-group textarea {
+      width: 100%;
+  }
+  #medicineTable th,
+  #medicineTable td {
+      padding: 8px;
+      font-size: 12px;
+  }
+  .medicine-name, .dose, .route, .morning, .afternoon, .night, .recommendation {
+      font-size: 12px;
+  }
+  .button-group {
+      flex-direction: column;
+      gap: 8px;
+  }
+  #addMedicine, #removeMedicine {
+      width: 100%;
+  }
+}
+
+/* Print Styling */
+@media print {
+  body {
+      background-color: #fff;
+      font-family: 'Times New Roman', serif;
+      font-size: 12pt;
+      line-height: 1.4;
+  }
+  .prescription-container {
+      margin: 0;
+      padding: 10mm;
+      box-shadow: none;
+      border: none;
+      max-width: 100%;
+  }
+  header {
+      border-bottom: 1px solid #000;
+      padding-bottom: 5mm;
+      margin-bottom: 5mm;
+  }
+  header h1 {
+      font-size: 16pt;
+      font-weight: bold;
+  }
+  header p {
+      font-size: 10pt;
+  }
+  h2 {
+      font-size: 14pt;
+      font-weight: bold;
+      border-bottom: none;
+      margin-bottom: 3mm;
+      text-transform: uppercase;
+  }
+  .form-group {
+      margin-bottom: 3mm;
+  }
+  .form-group label {
+      width: 30mm;
+      font-weight: bold;
+      font-size: 12pt;
+  }
+  /* Hide inputs, textareas, selects, and buttons during printing */
+  input, textarea, select, .button-group, #generatePrescription {
+      display: none;
+  }
+  /* Hide the labels for gender radio buttons specifically during printing */
+  .form-group:has(input[name="gender"]) label:not(:first-of-type) {
+      display: none;
+  }
+  /* Ensure the print-value spans are visible during printing */
+  .print-value {
+      display: inline;
+      font-size: 12pt;
+      white-space: pre-wrap;
+  }
+  #medicineTable {
+      border-collapse: collapse;
+      width: 100%;
+      margin-bottom: 5mm;
+      border: 0.5pt solid #d0d0d0; /* Subtle outer border */
+  }
+  #medicineTable thead {
+      display: table-header-group;
+  }
+  #medicineTable th {
+      display: table-cell;
+      border: 0.5pt solid #d0d0d0; /* Subtle borders */
+      padding: 1mm; /* Minimal padding */
+      text-align: center;
+      font-size: 12pt;
+      font-weight: bold;
+      text-transform: uppercase;
+      background-color: #f8f8f8; /* Lighter background for headers */
+      color: #000;
+  }
+  #medicineTable th:nth-child(1) {
+      width: 30%;
+  }
+  #medicineTable th:nth-child(2) {
+      width: 10%;
+  }
+  #medicineTable th:nth-child(3) {
+      width: 10%;
+  }
+  #medicineTable th:nth-child(4),
+  #medicineTable th:nth-child(5),
+  #medicineTable th:nth-child(6) {
+      width: 10%;
+  }
+  #medicineTable th:nth-child(7) {
+      width: 30%;
+  }
+  .sub-header th {
+      border: 0.5pt solid #d0d0d0; /* Subtle borders */
+      padding: 1mm; /* Minimal padding */
+      font-size: 10pt;
+      text-align: center;
+      font-weight: normal;
+      background-color: #fafafa; /* Even lighter background for sub-headers */
+      color: #333;
+  }
+  .sub-header th:empty {
+      border: none;
+  }
+  #medicineTable tbody tr {
+      display: table-row;
+  }
+  #medicineTable td {
+      border: 0.5pt solid #d0d0d0; /* Subtle borders */
+      padding: 1mm; /* Minimal padding */
+      display: table-cell;
+      font-size: 12pt;
+      vertical-align: middle;
+  }
+  #medicineTable td:nth-child(1) .print-value {
+      font-weight: bold;
+      text-transform: capitalize;
+  }
+  #medicineTable td:nth-child(2) .print-value,
+  #medicineTable td:nth-child(3) .print-value,
+  #medicineTable td:nth-child(4) .print-value,
+  #medicineTable td:nth-child(5) .print-value,
+  #medicineTable td:nth-child(6) .print-value {
+      display: block;
+      text-align: center;
+  }
+  #medicineTable td:nth-child(7) .print-value {
+      display: inline;
+      text-transform: capitalize;
+  }
+  footer {
+      border-top: 1px solid #000;
+      padding-top: 3mm;
+      font-size: 10pt;
+      text-align: right;
+  }
+}
